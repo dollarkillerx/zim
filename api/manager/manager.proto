@@ -1,5 +1,95 @@
 syntax = "proto3";
 
 option go_package = "github.com/dollarkillerx/zim/api/manager";
+import "api/protocol/protocol.proto";
 
 package manager;
+
+service Manager {
+  // super admin
+  rpc SuperAdminCreate(protocol.Empty) returns (SuperAdmin) {}; // 创建超级管理员
+  rpc SuperAdminDel(SuperAdminId) returns (protocol.Empty) {}; // 删除超级管理员
+  rpc SuperAdminReset(SuperAdminId) returns (SuperAdmin) {}; // 重置超级管理员token
+
+  // project
+  rpc ProjectCreate(ProjectCreateRequest) returns (Project) {}; // 创建项目
+  rpc ProjectDel(ProjectId) returns (protocol.Empty) {}; // 删除项目
+  rpc ProjectReset(ProjectResetRequest) returns (Project) {}; // 重置项目name，token
+
+  // user
+  rpc UserCreate(UserCreateRequest) returns (User) {}; // 创建用户
+  rpc UserDel(User) returns (protocol.Empty) {}; // 删除用户
+  rpc UserRelevance(UserRelevanceRequest) returns (protocol.Empty) {};  // 关联用户
+  rpc UserUnRelevance(UserRelevanceRequest) returns (protocol.Empty) {};  // 解除关联用户
+
+  // group
+  rpc GroupCreate(GroupCreateRequest) returns (Group) {}; // 创建群
+  rpc GroupDel(Group) returns (protocol.Empty) {}; // 删除群
+  rpc GroupUserRelevance(UserRelevanceRequest) returns (protocol.Empty) {};  // 群关联用户
+  rpc GroupUserUnRelevance(UserRelevanceRequest) returns (protocol.Empty) {};  // 群解除关联用户
+  rpc GroupDissolve(GroupDissolveRequest) returns (protocol.Empty) {};  // 解散群
+}
+
+message GroupDissolveRequest {
+  string group_id = 1;
+}
+
+message UserRelevanceRequest {
+  string user_id1 = 1;
+  string user_id2 = 2;
+}
+
+message GroupUserRelevanceRequest {
+  string group_id = 1;
+  string user_id = 2;
+}
+
+message GroupCreateRequest {
+  string project_token = 1;
+}
+
+message Group {
+  string project_id = 1;
+  string group_id = 2;
+}
+
+message UserCreateRequest {
+  string project_id = 1;;
+}
+
+message User {
+  string project_id = 1;
+  string user_id = 2;
+}
+
+message ProjectId {
+  string project_id = 1;
+}
+
+message ProjectResetRequest {
+  string project_id = 1;
+  string sup_token = 2;
+  string project_name = 3;
+  string project_token = 4;
+}
+
+message ProjectCreateRequest {
+  string sup_token = 1; // 超管 token
+  string project_name = 2; // 项目名称
+}
+
+message Project {
+  string project_id = 1;
+  string sup_id = 2;
+  string project_name = 3;
+  string project_token = 4;
+}
+
+message SuperAdmin {
+  string sup_id = 1;
+  string sup_token = 2;
+}
+
+message SuperAdminId {
+  string sup_id = 1;
+}

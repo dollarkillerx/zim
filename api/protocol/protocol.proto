@@ -3,3 +3,5 @@ syntax = "proto3";
 option go_package = "github.com/dollarkillerx/zim/api/protocol";
 
 package protocol;
+
+message Empty {}
