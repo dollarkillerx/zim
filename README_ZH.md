@@ -93,7 +93,7 @@ msg -> gateway -> id generate -> mq -> 消息落地 -> 推送
 
 | 行名称       | 行描述  | 行类型  |
 |-----------|------|------|
-| ID        | 群组id | uuid |
+| GroupID   | 群组id | uuid |
 | ProjectID | 项目id | uuid |
 
 > 角色关系表
