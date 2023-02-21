@@ -15,19 +15,23 @@ service Manager {
   rpc ProjectCreate(ProjectCreateRequest) returns (Project) {}; // 创建项目
   rpc ProjectDel(ProjectId) returns (protocol.Empty) {}; // 删除项目
   rpc ProjectReset(ProjectResetRequest) returns (Project) {}; // 重置项目name，token
+  rpc ProjectList(ProjectListRequest) returns (ProjectListResponse); // 获取项目列表
 
   // user
   rpc UserCreate(UserCreateRequest) returns (User) {}; // 创建用户
   rpc UserDel(User) returns (protocol.Empty) {}; // 删除用户
   rpc UserRelevance(UserRelevanceRequest) returns (protocol.Empty) {};  // 关联用户
   rpc UserUnRelevance(UserRelevanceRequest) returns (protocol.Empty) {};  // 解除关联用户
+  rpc UserFriendsList(UserFriendsListRequest) returns (UserFriendsListResponse) {}; // 好友列表
+  rpc UserOnline(UserOnlineRequest) returns (UserOnlineResponse) {}; // 用户是否在线
 
   // group
   rpc GroupCreate(GroupCreateRequest) returns (Group) {}; // 创建群
   rpc GroupDel(Group) returns (protocol.Empty) {}; // 删除群
-  rpc GroupUserRelevance(UserRelevanceRequest) returns (protocol.Empty) {};  // 群关联用户
+  rpc GroupUserRelevance(GroupUserRelevanceRequest) returns (protocol.Empty) {};  // 群关联用户
   rpc GroupUserUnRelevance(UserRelevanceRequest) returns (protocol.Empty) {};  // 群解除关联用户
   rpc GroupDissolve(GroupDissolveRequest) returns (protocol.Empty) {};  // 解散群
+  rpc GroupUserList()
 }
 
 message GroupDissolveRequest {
@@ -35,17 +39,19 @@ message GroupDissolveRequest {
 }
 
 message UserRelevanceRequest {
-  string user_id1 = 1;
-  string user_id2 = 2;
+  string project_id = 1;
+  string user_id1 = 2;
+  string user_id2 = 3;
 }
 
 message GroupUserRelevanceRequest {
-  string group_id = 1;
-  string user_id = 2;
+  string project_id = 1;
+  string group_id = 2;
+  string user_id = 3;
 }
 
 message GroupCreateRequest {
-  string project_token = 1;
+  string project_id = 1;
 }
 
 message Group {
@@ -54,7 +60,7 @@ message Group {
 }
 
 message UserCreateRequest {
-  string project_id = 1;;
+  string project_id = 1;
 }
 
 message User {
@@ -67,10 +73,9 @@ message ProjectId {
 }
 
 message ProjectResetRequest {
-  string project_id = 1;
-  string sup_token = 2;
+  string sup_token = 1;
+  string project_id = 2;
   string project_name = 3;
-  string project_token = 4;
 }
 
 message ProjectCreateRequest {
@@ -85,6 +90,14 @@ message Project {
   string project_token = 4;
 }
 
+message ProjectListRequest {
+  string sup_token = 1; // 超管 token
+}
+
+message ProjectListResponse {
+  repeated Project projects = 1;
+}
+
 message SuperAdmin {
   string sup_id = 1;
   string sup_token = 2;
@@ -92,4 +105,34 @@ message SuperAdmin {
 
 message SuperAdminId {
   string sup_id = 1;
+}
+
+message UserFriendsListRequest {
+  string project_id = 1;
+  string user_id = 2;
+  int64 limit = 3;
+  int64 offset = 4;
+}
+
+message UserFriendsListResponse {
+  repeated UserFriend friends = 1;
+  int64 total = 2;
+}
+
+message UserFriend {
+  string user_id = 1;
+}
+
+message UserOnlineRequest {
+  string project_id = 1;
+  repeated string users = 2;
+}
+
+message UserOnlineResponse {
+  repeated UserOnline user_online = 1;
+}
+
+message UserOnline {
+  string user_id = 1;
+  bool online = 2;
 }
