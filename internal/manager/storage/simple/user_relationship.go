@@ -2,6 +2,9 @@ package simple
 
 import (
 	"context"
+	"fmt"
+	"github.com/redis/go-redis/v9"
+	"time"
 
 	"github.com/dollarkillerx/zim/internal/manager/models"
 )
@@ -76,23 +79,33 @@ func (s *SimpleStorage) UserOnline(projectID string, users []string) ([]models.U
 	var onlineUsers []models.UserOnline
 
 	for _, v := range users {
-		result, err := s.redisClient.Exists(context.TODO(), v).Result()
+		exKey := fmt.Sprintf("user-online-%s-%s", projectID, v)
+
+		result, err := s.redisClient.Get(context.TODO(), exKey).Int64()
 		if err != nil {
-			return nil, err
+			if err != redis.Nil {
+				return nil, err
+			}
+			result = 0
 		}
 
-		if result != 0 {
-			onlineUsers = append(onlineUsers, models.UserOnline{
-				UserID: v,
-				Online: true,
-			})
-		} else {
-			onlineUsers = append(onlineUsers, models.UserOnline{
-				UserID: v,
-				Online: false,
-			})
-		}
+		onlineUsers = append(onlineUsers, models.UserOnline{
+			UserID:         v,
+			LastOnlineTime: result,
+		})
 	}
 
 	return onlineUsers, nil
+}
+
+func (s *SimpleStorage) UserOnlinePing(projectID string, users []string) error {
+	for _, v := range users {
+		exKey := fmt.Sprintf("user-online-%s-%s", projectID, v)
+		err := s.redisClient.Set(context.TODO(), exKey, time.Now().Unix(), 0).Err()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

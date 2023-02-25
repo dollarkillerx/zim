@@ -1,9 +1,13 @@
 package simple
 
-import "github.com/dollarkillerx/zim/internal/manager/models"
+import (
+	"github.com/dollarkillerx/zim/internal/manager/models"
+
+	"log"
+)
 
 func (s *SimpleStorage) autoMigrate() {
-	s.orm.AutoMigrate(
+	err := s.orm.AutoMigrate(
 		&models.SuperAdmin{},
 		&models.Project{},
 		&models.User{},
@@ -11,4 +15,8 @@ func (s *SimpleStorage) autoMigrate() {
 		&models.Group{},
 		&models.GroupRelationship{},
 	)
+
+	if err != nil {
+		log.Println(err)
+	}
 }

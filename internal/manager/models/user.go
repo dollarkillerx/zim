@@ -14,6 +14,6 @@ type UserFriend struct {
 }
 
 type UserOnline struct {
-	UserID string
-	Online bool
+	UserID         string
+	LastOnlineTime int64
 }

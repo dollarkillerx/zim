@@ -25,6 +25,7 @@ type superAdmin interface {
 	SuperAdminCreate() (*models.SuperAdmin, error)
 	SuperAdminDel(superAdminID string) error
 	SuperAdminReset(superAdminID string) (*models.SuperAdmin, error)
+	SuperAdminGetBySuperAdminID(superAdminID string) (*models.SuperAdmin, error)
 }
 
 type project interface {
@@ -41,6 +42,7 @@ type user interface {
 	UserUnRelevance(projectID string, userID1 string, userID2 string) error
 	UserFriendsList(projectID string, userID string) (total int, userFriends []models.UserFriend, err error)
 	UserOnline(projectID string, users []string) ([]models.UserOnline, error)
+	UserOnlinePing(projectID string, users []string) error
 }
 
 type group interface {
