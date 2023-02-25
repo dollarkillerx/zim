@@ -40,7 +40,7 @@ type user interface {
 	UserDel(projectID string, userID string) error
 	UserRelevance(projectID string, userID1 string, userID2 string) error
 	UserUnRelevance(projectID string, userID1 string, userID2 string) error
-	UserFriendsList(projectID string, userID string) (total int, userFriends []models.UserFriend, err error)
+	UserFriendsList(projectID string, userID string) (total int64, userFriends []models.UserFriend, err error)
 	UserOnline(projectID string, users []string) ([]models.UserOnline, error)
 	UserOnlinePing(projectID string, users []string) error
 }
@@ -51,5 +51,5 @@ type group interface {
 	GroupUserRelevance(projectID string, groupID string, userID string) error
 	GroupUserUnRelevance(projectID string, groupID string, userID string) error
 	GroupDissolve(projectID string, groupID string) error
-	GroupUserList(projectID string, groupID string) (total int, userIDs []string, err error)
+	GroupUserList(projectID string, groupID string) (total int64, userIDs []string, err error)
 }

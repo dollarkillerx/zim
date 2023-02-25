@@ -90,13 +90,13 @@ message ProjectDelRequest {
 }
 
 message ProjectResetRequest {
-  string sup_token = 1;
+  string sup_id = 1;
   string project_id = 2;
   string project_name = 3;
 }
 
 message ProjectCreateRequest {
-  string sup_token = 1; // 超管 token
+  string sup_id = 1; // 超管 id
   string project_name = 2; // 项目名称
 }
 
@@ -108,7 +108,7 @@ message Project {
 }
 
 message ProjectListRequest {
-  string sup_token = 1; // 超管 token
+  string sup_id = 1; // 超管 token
 }
 
 message ProjectListResponse {
@@ -149,5 +149,5 @@ message UserOnlineResponse {
 
 message UserOnline {
   string user_id = 1;
-  bool online = 2;
+  int64 last_online_time = 2;
 }

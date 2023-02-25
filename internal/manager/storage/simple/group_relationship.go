@@ -44,7 +44,7 @@ func (s *SimpleStorage) GroupDissolve(projectID string, groupID string) error {
 	return err
 }
 
-func (s *SimpleStorage) GroupUserList(projectID string, groupID string) (total int, userIDs []string, err error) {
+func (s *SimpleStorage) GroupUserList(projectID string, groupID string) (total int64, userIDs []string, err error) {
 	var grs []models.GroupRelationship
 
 	err = s.orm.Model(&models.GroupRelationship{}).
@@ -56,5 +56,5 @@ func (s *SimpleStorage) GroupUserList(projectID string, groupID string) (total i
 		userIDs = append(userIDs, v.UserID)
 	}
 
-	return len(grs), userIDs, err
+	return int64(len(grs)), userIDs, err
 }

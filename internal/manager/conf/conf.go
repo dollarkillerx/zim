@@ -24,5 +24,6 @@ type config struct {
 
 	PostgresConfiguration *conf.PostgresConfiguration
 	RedisConfiguration    *conf.RedisConfiguration
+	ETCDConfiguration     *conf.ETCDConfiguration
 	LoggerConfig          *conf.LoggerConfig
 }

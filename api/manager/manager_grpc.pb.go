@@ -29,7 +29,7 @@ type ManagerClient interface {
 	SuperAdminReset(ctx context.Context, in *SuperAdminId, opts ...grpc.CallOption) (*SuperAdmin, error)
 	// project
 	ProjectCreate(ctx context.Context, in *ProjectCreateRequest, opts ...grpc.CallOption) (*Project, error)
-	ProjectDel(ctx context.Context, in *ProjectId, opts ...grpc.CallOption) (*protocol.Empty, error)
+	ProjectDel(ctx context.Context, in *ProjectDelRequest, opts ...grpc.CallOption) (*protocol.Empty, error)
 	ProjectReset(ctx context.Context, in *ProjectResetRequest, opts ...grpc.CallOption) (*Project, error)
 	ProjectList(ctx context.Context, in *ProjectListRequest, opts ...grpc.CallOption) (*ProjectListResponse, error)
 	// user
@@ -92,7 +92,7 @@ func (c *managerClient) ProjectCreate(ctx context.Context, in *ProjectCreateRequ
 	return out, nil
 }
 
-func (c *managerClient) ProjectDel(ctx context.Context, in *ProjectId, opts ...grpc.CallOption) (*protocol.Empty, error) {
+func (c *managerClient) ProjectDel(ctx context.Context, in *ProjectDelRequest, opts ...grpc.CallOption) (*protocol.Empty, error) {
 	out := new(protocol.Empty)
 	err := c.cc.Invoke(ctx, "/manager.Manager/ProjectDel", in, out, opts...)
 	if err != nil {
@@ -237,7 +237,7 @@ type ManagerServer interface {
 	SuperAdminReset(context.Context, *SuperAdminId) (*SuperAdmin, error)
 	// project
 	ProjectCreate(context.Context, *ProjectCreateRequest) (*Project, error)
-	ProjectDel(context.Context, *ProjectId) (*protocol.Empty, error)
+	ProjectDel(context.Context, *ProjectDelRequest) (*protocol.Empty, error)
 	ProjectReset(context.Context, *ProjectResetRequest) (*Project, error)
 	ProjectList(context.Context, *ProjectListRequest) (*ProjectListResponse, error)
 	// user
@@ -273,7 +273,7 @@ func (UnimplementedManagerServer) SuperAdminReset(context.Context, *SuperAdminId
 func (UnimplementedManagerServer) ProjectCreate(context.Context, *ProjectCreateRequest) (*Project, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProjectCreate not implemented")
 }
-func (UnimplementedManagerServer) ProjectDel(context.Context, *ProjectId) (*protocol.Empty, error) {
+func (UnimplementedManagerServer) ProjectDel(context.Context, *ProjectDelRequest) (*protocol.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProjectDel not implemented")
 }
 func (UnimplementedManagerServer) ProjectReset(context.Context, *ProjectResetRequest) (*Project, error) {
@@ -404,7 +404,7 @@ func _Manager_ProjectCreate_Handler(srv interface{}, ctx context.Context, dec fu
 }
 
 func _Manager_ProjectDel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProjectId)
+	in := new(ProjectDelRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -416,7 +416,7 @@ func _Manager_ProjectDel_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/manager.Manager/ProjectDel",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ManagerServer).ProjectDel(ctx, req.(*ProjectId))
+		return srv.(ManagerServer).ProjectDel(ctx, req.(*ProjectDelRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

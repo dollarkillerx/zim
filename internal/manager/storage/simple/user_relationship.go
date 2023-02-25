@@ -66,13 +66,13 @@ func (s *SimpleStorage) UserUnRelevance(projectID string, userID1 string, userID
 	return err
 }
 
-func (s *SimpleStorage) UserFriendsList(projectID string, userID string) (total int, userFriends []models.UserFriend, err error) {
+func (s *SimpleStorage) UserFriendsList(projectID string, userID string) (total int64, userFriends []models.UserFriend, err error) {
 	err = s.orm.Model(&models.UserRelationship{}).
 		Where("project_id = ?", projectID).
 		Where(s.orm.Where("user_id = ?", userID).Or("friend_id = ?", userID)).
 		Find(&userFriends).Error
 
-	return len(userFriends), userFriends, err
+	return int64(len(userFriends)), userFriends, err
 }
 
 func (s *SimpleStorage) UserOnline(projectID string, users []string) ([]models.UserOnline, error) {
