@@ -15,6 +15,10 @@ type SimpleStorage struct {
 	redisClient *redis.Client
 }
 
+func (s *SimpleStorage) DB() *gorm.DB {
+	return s.orm
+}
+
 func NewSimpleStorage(pgsqlConf conf.PostgresConfiguration, redisConf conf.RedisConfiguration) (*SimpleStorage, error) {
 	orm, err := client.PostgresClient(pgsqlConf, &gorm.Config{
 		Logger: lib.GormLoggerNew(logger.GetLogger()),
@@ -30,8 +34,10 @@ func NewSimpleStorage(pgsqlConf conf.PostgresConfiguration, redisConf conf.Redis
 		return nil, errors.WithStack(err)
 	}
 
-	return &SimpleStorage{
+	simpleStorage := &SimpleStorage{
 		orm:         orm,
 		redisClient: redisClient,
-	}, nil
+	}
+
+	return simpleStorage, nil
 }

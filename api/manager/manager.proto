@@ -13,7 +13,7 @@ service Manager {
 
   // project
   rpc ProjectCreate(ProjectCreateRequest) returns (Project) {}; // 创建项目
-  rpc ProjectDel(ProjectId) returns (protocol.Empty) {}; // 删除项目
+  rpc ProjectDel(ProjectDelRequest) returns (protocol.Empty) {}; // 删除项目
   rpc ProjectReset(ProjectResetRequest) returns (Project) {}; // 重置项目name，token
   rpc ProjectList(ProjectListRequest) returns (ProjectListResponse); // 获取项目列表
 
@@ -29,13 +29,24 @@ service Manager {
   rpc GroupCreate(GroupCreateRequest) returns (Group) {}; // 创建群
   rpc GroupDel(Group) returns (protocol.Empty) {}; // 删除群
   rpc GroupUserRelevance(GroupUserRelevanceRequest) returns (protocol.Empty) {};  // 群关联用户
-  rpc GroupUserUnRelevance(UserRelevanceRequest) returns (protocol.Empty) {};  // 群解除关联用户
+  rpc GroupUserUnRelevance(GroupUserUnRelevanceRequest) returns (protocol.Empty) {};  // 群解除关联用户
   rpc GroupDissolve(GroupDissolveRequest) returns (protocol.Empty) {};  // 解散群
-  rpc GroupUserList()
+  rpc GroupUserList(GroupUserListRequest) returns (GroupUserListResponse) {}; // 群用户列表
+}
+
+message GroupUserListRequest {
+  string project_id = 1;
+  string group_id = 2;
+}
+
+message GroupUserListResponse {
+  repeated string user_ids = 1;
+  int64 total = 2;
 }
 
 message GroupDissolveRequest {
-  string group_id = 1;
+  string project_id = 1;
+  string group_id = 2;
 }
 
 message UserRelevanceRequest {
@@ -45,6 +56,12 @@ message UserRelevanceRequest {
 }
 
 message GroupUserRelevanceRequest {
+  string project_id = 1;
+  string group_id = 2;
+  string user_id = 3;
+}
+
+message GroupUserUnRelevanceRequest {
   string project_id = 1;
   string group_id = 2;
   string user_id = 3;
@@ -68,7 +85,7 @@ message User {
   string user_id = 2;
 }
 
-message ProjectId {
+message ProjectDelRequest {
   string project_id = 1;
 }
 
@@ -110,8 +127,6 @@ message SuperAdminId {
 message UserFriendsListRequest {
   string project_id = 1;
   string user_id = 2;
-  int64 limit = 3;
-  int64 offset = 4;
 }
 
 message UserFriendsListResponse {

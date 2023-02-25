@@ -31,17 +31,21 @@ type ManagerClient interface {
 	ProjectCreate(ctx context.Context, in *ProjectCreateRequest, opts ...grpc.CallOption) (*Project, error)
 	ProjectDel(ctx context.Context, in *ProjectId, opts ...grpc.CallOption) (*protocol.Empty, error)
 	ProjectReset(ctx context.Context, in *ProjectResetRequest, opts ...grpc.CallOption) (*Project, error)
+	ProjectList(ctx context.Context, in *ProjectListRequest, opts ...grpc.CallOption) (*ProjectListResponse, error)
 	// user
 	UserCreate(ctx context.Context, in *UserCreateRequest, opts ...grpc.CallOption) (*User, error)
 	UserDel(ctx context.Context, in *User, opts ...grpc.CallOption) (*protocol.Empty, error)
 	UserRelevance(ctx context.Context, in *UserRelevanceRequest, opts ...grpc.CallOption) (*protocol.Empty, error)
 	UserUnRelevance(ctx context.Context, in *UserRelevanceRequest, opts ...grpc.CallOption) (*protocol.Empty, error)
+	UserFriendsList(ctx context.Context, in *UserFriendsListRequest, opts ...grpc.CallOption) (*UserFriendsListResponse, error)
+	UserOnline(ctx context.Context, in *UserOnlineRequest, opts ...grpc.CallOption) (*UserOnlineResponse, error)
 	// group
 	GroupCreate(ctx context.Context, in *GroupCreateRequest, opts ...grpc.CallOption) (*Group, error)
 	GroupDel(ctx context.Context, in *Group, opts ...grpc.CallOption) (*protocol.Empty, error)
-	GroupUserRelevance(ctx context.Context, in *UserRelevanceRequest, opts ...grpc.CallOption) (*protocol.Empty, error)
-	GroupUserUnRelevance(ctx context.Context, in *UserRelevanceRequest, opts ...grpc.CallOption) (*protocol.Empty, error)
+	GroupUserRelevance(ctx context.Context, in *GroupUserRelevanceRequest, opts ...grpc.CallOption) (*protocol.Empty, error)
+	GroupUserUnRelevance(ctx context.Context, in *GroupUserUnRelevanceRequest, opts ...grpc.CallOption) (*protocol.Empty, error)
 	GroupDissolve(ctx context.Context, in *GroupDissolveRequest, opts ...grpc.CallOption) (*protocol.Empty, error)
+	GroupUserList(ctx context.Context, in *GroupUserListRequest, opts ...grpc.CallOption) (*GroupUserListResponse, error)
 }
 
 type managerClient struct {
@@ -106,6 +110,15 @@ func (c *managerClient) ProjectReset(ctx context.Context, in *ProjectResetReques
 	return out, nil
 }
 
+func (c *managerClient) ProjectList(ctx context.Context, in *ProjectListRequest, opts ...grpc.CallOption) (*ProjectListResponse, error) {
+	out := new(ProjectListResponse)
+	err := c.cc.Invoke(ctx, "/manager.Manager/ProjectList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *managerClient) UserCreate(ctx context.Context, in *UserCreateRequest, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, "/manager.Manager/UserCreate", in, out, opts...)
@@ -142,6 +155,24 @@ func (c *managerClient) UserUnRelevance(ctx context.Context, in *UserRelevanceRe
 	return out, nil
 }
 
+func (c *managerClient) UserFriendsList(ctx context.Context, in *UserFriendsListRequest, opts ...grpc.CallOption) (*UserFriendsListResponse, error) {
+	out := new(UserFriendsListResponse)
+	err := c.cc.Invoke(ctx, "/manager.Manager/UserFriendsList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *managerClient) UserOnline(ctx context.Context, in *UserOnlineRequest, opts ...grpc.CallOption) (*UserOnlineResponse, error) {
+	out := new(UserOnlineResponse)
+	err := c.cc.Invoke(ctx, "/manager.Manager/UserOnline", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *managerClient) GroupCreate(ctx context.Context, in *GroupCreateRequest, opts ...grpc.CallOption) (*Group, error) {
 	out := new(Group)
 	err := c.cc.Invoke(ctx, "/manager.Manager/GroupCreate", in, out, opts...)
@@ -160,7 +191,7 @@ func (c *managerClient) GroupDel(ctx context.Context, in *Group, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *managerClient) GroupUserRelevance(ctx context.Context, in *UserRelevanceRequest, opts ...grpc.CallOption) (*protocol.Empty, error) {
+func (c *managerClient) GroupUserRelevance(ctx context.Context, in *GroupUserRelevanceRequest, opts ...grpc.CallOption) (*protocol.Empty, error) {
 	out := new(protocol.Empty)
 	err := c.cc.Invoke(ctx, "/manager.Manager/GroupUserRelevance", in, out, opts...)
 	if err != nil {
@@ -169,7 +200,7 @@ func (c *managerClient) GroupUserRelevance(ctx context.Context, in *UserRelevanc
 	return out, nil
 }
 
-func (c *managerClient) GroupUserUnRelevance(ctx context.Context, in *UserRelevanceRequest, opts ...grpc.CallOption) (*protocol.Empty, error) {
+func (c *managerClient) GroupUserUnRelevance(ctx context.Context, in *GroupUserUnRelevanceRequest, opts ...grpc.CallOption) (*protocol.Empty, error) {
 	out := new(protocol.Empty)
 	err := c.cc.Invoke(ctx, "/manager.Manager/GroupUserUnRelevance", in, out, opts...)
 	if err != nil {
@@ -181,6 +212,15 @@ func (c *managerClient) GroupUserUnRelevance(ctx context.Context, in *UserReleva
 func (c *managerClient) GroupDissolve(ctx context.Context, in *GroupDissolveRequest, opts ...grpc.CallOption) (*protocol.Empty, error) {
 	out := new(protocol.Empty)
 	err := c.cc.Invoke(ctx, "/manager.Manager/GroupDissolve", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *managerClient) GroupUserList(ctx context.Context, in *GroupUserListRequest, opts ...grpc.CallOption) (*GroupUserListResponse, error) {
+	out := new(GroupUserListResponse)
+	err := c.cc.Invoke(ctx, "/manager.Manager/GroupUserList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -199,17 +239,21 @@ type ManagerServer interface {
 	ProjectCreate(context.Context, *ProjectCreateRequest) (*Project, error)
 	ProjectDel(context.Context, *ProjectId) (*protocol.Empty, error)
 	ProjectReset(context.Context, *ProjectResetRequest) (*Project, error)
+	ProjectList(context.Context, *ProjectListRequest) (*ProjectListResponse, error)
 	// user
 	UserCreate(context.Context, *UserCreateRequest) (*User, error)
 	UserDel(context.Context, *User) (*protocol.Empty, error)
 	UserRelevance(context.Context, *UserRelevanceRequest) (*protocol.Empty, error)
 	UserUnRelevance(context.Context, *UserRelevanceRequest) (*protocol.Empty, error)
+	UserFriendsList(context.Context, *UserFriendsListRequest) (*UserFriendsListResponse, error)
+	UserOnline(context.Context, *UserOnlineRequest) (*UserOnlineResponse, error)
 	// group
 	GroupCreate(context.Context, *GroupCreateRequest) (*Group, error)
 	GroupDel(context.Context, *Group) (*protocol.Empty, error)
-	GroupUserRelevance(context.Context, *UserRelevanceRequest) (*protocol.Empty, error)
-	GroupUserUnRelevance(context.Context, *UserRelevanceRequest) (*protocol.Empty, error)
+	GroupUserRelevance(context.Context, *GroupUserRelevanceRequest) (*protocol.Empty, error)
+	GroupUserUnRelevance(context.Context, *GroupUserUnRelevanceRequest) (*protocol.Empty, error)
 	GroupDissolve(context.Context, *GroupDissolveRequest) (*protocol.Empty, error)
+	GroupUserList(context.Context, *GroupUserListRequest) (*GroupUserListResponse, error)
 	mustEmbedUnimplementedManagerServer()
 }
 
@@ -235,6 +279,9 @@ func (UnimplementedManagerServer) ProjectDel(context.Context, *ProjectId) (*prot
 func (UnimplementedManagerServer) ProjectReset(context.Context, *ProjectResetRequest) (*Project, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProjectReset not implemented")
 }
+func (UnimplementedManagerServer) ProjectList(context.Context, *ProjectListRequest) (*ProjectListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProjectList not implemented")
+}
 func (UnimplementedManagerServer) UserCreate(context.Context, *UserCreateRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCreate not implemented")
 }
@@ -247,20 +294,29 @@ func (UnimplementedManagerServer) UserRelevance(context.Context, *UserRelevanceR
 func (UnimplementedManagerServer) UserUnRelevance(context.Context, *UserRelevanceRequest) (*protocol.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserUnRelevance not implemented")
 }
+func (UnimplementedManagerServer) UserFriendsList(context.Context, *UserFriendsListRequest) (*UserFriendsListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserFriendsList not implemented")
+}
+func (UnimplementedManagerServer) UserOnline(context.Context, *UserOnlineRequest) (*UserOnlineResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserOnline not implemented")
+}
 func (UnimplementedManagerServer) GroupCreate(context.Context, *GroupCreateRequest) (*Group, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupCreate not implemented")
 }
 func (UnimplementedManagerServer) GroupDel(context.Context, *Group) (*protocol.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupDel not implemented")
 }
-func (UnimplementedManagerServer) GroupUserRelevance(context.Context, *UserRelevanceRequest) (*protocol.Empty, error) {
+func (UnimplementedManagerServer) GroupUserRelevance(context.Context, *GroupUserRelevanceRequest) (*protocol.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupUserRelevance not implemented")
 }
-func (UnimplementedManagerServer) GroupUserUnRelevance(context.Context, *UserRelevanceRequest) (*protocol.Empty, error) {
+func (UnimplementedManagerServer) GroupUserUnRelevance(context.Context, *GroupUserUnRelevanceRequest) (*protocol.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupUserUnRelevance not implemented")
 }
 func (UnimplementedManagerServer) GroupDissolve(context.Context, *GroupDissolveRequest) (*protocol.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupDissolve not implemented")
+}
+func (UnimplementedManagerServer) GroupUserList(context.Context, *GroupUserListRequest) (*GroupUserListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupUserList not implemented")
 }
 func (UnimplementedManagerServer) mustEmbedUnimplementedManagerServer() {}
 
@@ -383,6 +439,24 @@ func _Manager_ProjectReset_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Manager_ProjectList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProjectListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ManagerServer).ProjectList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/manager.Manager/ProjectList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ManagerServer).ProjectList(ctx, req.(*ProjectListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Manager_UserCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserCreateRequest)
 	if err := dec(in); err != nil {
@@ -455,6 +529,42 @@ func _Manager_UserUnRelevance_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Manager_UserFriendsList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserFriendsListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ManagerServer).UserFriendsList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/manager.Manager/UserFriendsList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ManagerServer).UserFriendsList(ctx, req.(*UserFriendsListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Manager_UserOnline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserOnlineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ManagerServer).UserOnline(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/manager.Manager/UserOnline",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ManagerServer).UserOnline(ctx, req.(*UserOnlineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Manager_GroupCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GroupCreateRequest)
 	if err := dec(in); err != nil {
@@ -492,7 +602,7 @@ func _Manager_GroupDel_Handler(srv interface{}, ctx context.Context, dec func(in
 }
 
 func _Manager_GroupUserRelevance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRelevanceRequest)
+	in := new(GroupUserRelevanceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -504,13 +614,13 @@ func _Manager_GroupUserRelevance_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/manager.Manager/GroupUserRelevance",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ManagerServer).GroupUserRelevance(ctx, req.(*UserRelevanceRequest))
+		return srv.(ManagerServer).GroupUserRelevance(ctx, req.(*GroupUserRelevanceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Manager_GroupUserUnRelevance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRelevanceRequest)
+	in := new(GroupUserUnRelevanceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -522,7 +632,7 @@ func _Manager_GroupUserUnRelevance_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/manager.Manager/GroupUserUnRelevance",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ManagerServer).GroupUserUnRelevance(ctx, req.(*UserRelevanceRequest))
+		return srv.(ManagerServer).GroupUserUnRelevance(ctx, req.(*GroupUserUnRelevanceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -541,6 +651,24 @@ func _Manager_GroupDissolve_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ManagerServer).GroupDissolve(ctx, req.(*GroupDissolveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Manager_GroupUserList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupUserListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ManagerServer).GroupUserList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/manager.Manager/GroupUserList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ManagerServer).GroupUserList(ctx, req.(*GroupUserListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -577,6 +705,10 @@ var Manager_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Manager_ProjectReset_Handler,
 		},
 		{
+			MethodName: "ProjectList",
+			Handler:    _Manager_ProjectList_Handler,
+		},
+		{
 			MethodName: "UserCreate",
 			Handler:    _Manager_UserCreate_Handler,
 		},
@@ -591,6 +723,14 @@ var Manager_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserUnRelevance",
 			Handler:    _Manager_UserUnRelevance_Handler,
+		},
+		{
+			MethodName: "UserFriendsList",
+			Handler:    _Manager_UserFriendsList_Handler,
+		},
+		{
+			MethodName: "UserOnline",
+			Handler:    _Manager_UserOnline_Handler,
 		},
 		{
 			MethodName: "GroupCreate",
@@ -611,6 +751,10 @@ var Manager_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GroupDissolve",
 			Handler:    _Manager_GroupDissolve_Handler,
+		},
+		{
+			MethodName: "GroupUserList",
+			Handler:    _Manager_GroupUserList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
