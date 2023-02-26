@@ -53,7 +53,7 @@ func NewSimpleStorage(pgsqlConf conf.PostgresConfiguration, redisConf conf.Redis
 		redisClient: redisClient,
 	}
 
-	simpleStorage.autoMigrate()
+	//simpleStorage.autoMigrate()
 
 	return simpleStorage, nil
 }

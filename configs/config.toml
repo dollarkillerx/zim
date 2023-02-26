@@ -1,0 +1,23 @@
+ListenAddress = "127.0.0.1:8082"
+RPCToken="8e24a40a-7f13-469d-8141-e5a81df7b629"
+
+[PostgresConfiguration]
+Host = "127.0.0.1"
+Port = 5432
+User = "root"
+Password = "root"
+DBName = "zim"
+
+[RedisConfiguration]
+Addr = "127.0.0.1:6379"
+DB = 0
+Password = "root"
+
+[ETCDConfiguration]
+Endpoints = [
+    "127.0.0.1:2379"
+]
+DialTimeout = 3
+
+[LoggerConfig]
+Filename = "manager-log.log"

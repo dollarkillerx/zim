@@ -2,6 +2,13 @@ package server
 
 import (
 	"context"
+	"github.com/dollarkillerx/zim/pkg/utils"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"log"
 	"net"
 
@@ -107,7 +114,7 @@ func (m *ManagerServer) ProjectList(ctx context.Context, request *manager.Projec
 			ProjectId:   v.ProjectID,
 			SupId:       v.SupID,
 			ProjectName: v.Name,
-			//ProjectToken: v.Token,
+			//ProjectToken: v.RPCToken,
 		})
 	}
 
@@ -300,7 +307,20 @@ func grpcNewServer() *grpc.Server {
 
 	plugin.AutoUnRegister(serverID)
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+		grpc_ctxtags.StreamServerInterceptor(),
+		grpc_opentracing.StreamServerInterceptor(),
+		grpc_zap.StreamServerInterceptor(logger.GetLogger()),
+		grpc_auth.StreamServerInterceptor(utils.GRPCAuth(conf.GetConfig().RPCToken)),
+		grpc_recovery.StreamServerInterceptor(),
+	)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_ctxtags.UnaryServerInterceptor(),
+			grpc_opentracing.UnaryServerInterceptor(),
+			grpc_zap.UnaryServerInterceptor(logger.GetLogger()),
+			grpc_auth.UnaryServerInterceptor(utils.GRPCAuth(conf.GetConfig().RPCToken)),
+			grpc_recovery.UnaryServerInterceptor(),
+		)))
 
 	managerServer, err := NewManagerServer()
 	if err != nil {
@@ -309,12 +329,10 @@ func grpcNewServer() *grpc.Server {
 
 	manager.RegisterManagerServer(grpcServer, managerServer)
 
-	go func() {
-		logger.Infof("server listening at %v", lis.Addr())
-		if err := grpcServer.Serve(lis); err != nil {
-			log.Fatalf("failed to serve: %v", err)
-		}
-	}()
+	logger.Infof("server listening at %v", lis.Addr())
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 
 	return grpcServer
 }

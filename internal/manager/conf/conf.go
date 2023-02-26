@@ -21,6 +21,7 @@ func GetConfig() *config {
 
 type config struct {
 	ListenAddress string
+	RPCToken      string
 
 	PostgresConfiguration *conf.PostgresConfiguration
 	RedisConfiguration    *conf.RedisConfiguration
